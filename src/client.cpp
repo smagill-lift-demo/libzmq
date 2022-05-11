@@ -60,6 +60,10 @@ void zmq::client_t::xattach_pipe (pipe_t *pipe_,
 
 int zmq::client_t::xsend (msg_t *msg_)
 {
+    char some_ptr[10];
+    memset(some_ptr, 0, 10);
+    free(some_ptr);
+    
     //  CLIENT sockets do not allow multipart data (ZMQ_SNDMORE)
     if (msg_->flags () & msg_t::more) {
         errno = EINVAL;
@@ -71,6 +75,8 @@ int zmq::client_t::xsend (msg_t *msg_)
 int zmq::client_t::xrecv (msg_t *msg_)
 {
     int rc = _fq.recvpipe (msg_, NULL);
+    
+    
 
     // Drop any messages with more flag
     while (rc == 0 && msg_->flags () & msg_t::more) {
